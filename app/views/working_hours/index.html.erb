@@ -1,31 +1,4 @@
-<% content_for :header_tags do %>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $('input#filter_begindate, input#filter_enddate').keyup(function(e) {
-        if (e.keyCode == 13) {
-          $("#query_form").submit();
-        }
-      });
-
-      $('select#filter_project_id').change(function() {
-        $.ajax({
-          url: "<%= project_issues_working_hours_path(:filter => 1) %>",
-          data: {
-            project_id: $(this).val()
-          },
-          dataType: "script"
-        });
-      });
-
-    });
-  </script>
-
-  <%= stylesheet_link_tag '/plugin_assets/redmine_working_hours/stylesheets/working_hours' %>
-<% end %>
-
 <div class="contextual">
-  <%= link_to l(:button_add), new_working_hour_path(:filter => params[:filter]), :class => 'icon icon-add' %>
-  <%= link_to l(:label_holidays), holidays_path, :class => 'icon icon-ics' %>
   <% if User.current.admin? %>
     <%= link_to l(:label_working_hours_snapshots), working_hours_snapshots_path, :class => 'icon icon-time' %>
   <% end %>
@@ -53,24 +26,8 @@
   </div>
 <% end %>
 
-<% if @working_hours.empty? %>
-  <p class="nodata"><%= l(:label_no_data) %></p>
-<% else %>
-  <%= render :partial => 'working_hours/list', :locals => {:working_hours => @working_hours} %>
-
-  <p class="other-formats">
-    <%= l(:label_export_to) %>
-    <span><%= link_to 'CSV', params.merge({:format => 'csv'}), :class => 'icon icon-csv' %></span>
-    <% if User.current.admin? %>
-      <span><%= link_to "CSV (#{l(:field_admin)})", params.merge({:format => 'csv', :users => 'all'}), :class => 'icon icon-csv' %></span>
-    <% end %>
-    <span><%= link_to 'iCalendar', params.merge({:format => 'ics', :key => User.current.api_key}), :class => 'icon icon-ics' %></span>
-  </p>
-<% end %>
 
 <h3><%= l(:label_overview) %></h3>
-
-<p><%= l(:label_today_capitalized) %>: <%= duration(WorkingHours.total_minutes_day(Date.today)) %></p>
 
 <%= l(:label_month) %>:
 <table class="list">
@@ -82,14 +39,25 @@
     <th><%= l(:label_diff_prev_month) %></th>
   </thead>
   <tr>
-    <td><%= "#{'%.1f' % (WorkingHours.total_minutes_month(Time.now.month)/60.0)}h" %></td>
-    <td><%= "#{'%.1f' % (WorkingHours.target_minutes_month(Time.now.month)/60.0)}h" %></td>
-    <td><%= "#{'%.1f' % (-WorkingHours.diff_minutes_until_day(WorkingHours.last_day_of_month(Time.now.month))/60.0)}h" %></td>
-    <td><%= "#{'%.1f' % (WorkingHours.diff_minutes_until_day(Date.today - 1.day)/60.0)}h" %></td>
-    <td><%= "#{'%.1f' % (WorkingHours.diff_minutes_until_day(Date.new(Time.now.year, Time.now.month, 1) - 1.day)/60.0)}h" %></td>
+    <td><%= "#{'%.1f' % (WorkingHours.total_hours_month(Time.now.month))}h" %></td>
+    <td><%= "#{'%.1f' % (WorkingHours.target_hours_month(Time.now.month))}h" %></td>
+    <td><%= "#{'%.1f' % (-WorkingHours.diff_hours_until_day(WorkingHours.last_day_of_month(Time.now.month)))}h" %></td>
+    <td><%= "#{'%.1f' % (WorkingHours.diff_hours_until_day(Date.today - 1.day))}h" %></td>
+    <td><%= "#{'%.1f' % (WorkingHours.diff_hours_until_day(Date.new(Time.now.year, Time.now.month, 1) - 1.day))}h" %></td>
   </tr>
 </table>
 
 <p><%= l(:label_vacation_left) %>: <%= WorkingHours.vacation_days_available %> <%= l(:label_day_plural) %></p>
 
-<p><%= link_to l(:label_working_hours_statistics), statistics_working_hours_path %><p>
+<table class="list">
+  <thead>
+    <th><%= l(:field_total) %></th>
+    <th><%= l(:field_target) %></th>
+    <th><%= l(:label_diff) %></th>
+  </thead>
+  <tr>
+    <td><%= "#{'%.1f' % @actual_hours}h" %></td>
+    <td><%= "#{'%.1f' % @target_hours}h" %></td>
+    <td><%= "#{'%.1f' % @diff_hours}h" %></td>
+  </tr>
+</table>
