@@ -41,25 +41,26 @@ class WorkingHours
     end
 
     # Use holiday gem!!!
-
     #holidays = Holiday.where("day >= ? AND day <= ?", start_date, end_date).pluck(:day)
+    holidays = []
+
     t = start_date
     num_days = (end_date - start_date + 1).to_int
     num_days.times do
       if t.wday != 0 and t.wday != 6
         # not a weekend
-        # if holidays.include?(t)
-        #   # holiday on working day
-        #   holiday = Holiday.find_by_day(t)
-        #   hours = workday_hours - holiday.hours
-        #   if hours < 0
-        #     hours = 0
-        #   end
-        #   hours += hours
-        # else
+        if holidays.include?(t)
+          # holiday on working day
+          holiday = Holiday.find_by_day(t)
+          hours = workday_hours - holiday.hours
+          if hours < 0
+            hours = 0
+          end
+          hours += hours
+        else
           # working day
           hours += workday_hours
-        #end
+        end
       end
       t += 1
     end
@@ -114,23 +115,24 @@ class WorkingHours
 
     unless vacation_issue.nil?
       #holidays = Holiday.where("day >= ? AND day <= ?", start_date, end_date).pluck(:day)
-      working_hours = TimeEntry.where(:user_id => user.id).where(:issue_id => vacation_issue.id).where(:spent_on => start_date..end_date)
+      holidays = []
+      working_hours = TimeEntry.where(:user_id => user.id, :issue_id => vacation_issue.id, :spent_on => start_date..end_date)
       #working_hours = WorkingHours.where(:user_id => user.id).where(:issue_id => vacation_issue.id).where("workday >= ? AND workday <= ?", start_date, end_date)
       working_hours.each do |wh|
         if wh.spent_on.wday != 0 and wh.spent_on.wday != 6
-          #unless holidays.include?(wh.workday)
-            # not a weekend and not a holiday
-            # if wh.minutes/60.0 > workday_hours/2.0
-            #   days_used += 1.0
-            # else
-            #   days_used += 0.5
-            # end
-          #end
+          unless holidays.include?(wh.spent_on)
+            #not a weekend and not a holiday
+            if wh.hours > workday_hours/2.0
+              days_used += 1.0
+            else
+              days_used += 0.5
+            end
+          end
         end
       end
     end
 
-    user_vacation_days # - days_used
+    user_vacation_days - days_used
   end
 
   # helpers
