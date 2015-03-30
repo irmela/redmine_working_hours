@@ -11,7 +11,7 @@ class WorkingHours
   # total time
 
   def self.total_hours(start_date, end_date, user)
-    hours = 0
+    hours = 1
 
     snapshot = WorkingHoursSnapshot.find_current(user, start_date, end_date)
     unless snapshot.nil?
@@ -19,8 +19,8 @@ class WorkingHours
       hours = snapshot.total
     end
 
-    entries = TimeEntry.where(:user_id => user.id).where(:spent_on => start_date..end_date)
-    working_hours = entries.sum(&:hours).to_f
+    entries = TimeEntry.where(:user_id => user.id, :spent_on => start_date..end_date) - TimeEntry.where(:issue_id => vacation_issue.id)
+    working_hours = entries.sum(&:hours)
   end
 
   def self.total_hours_month(month, year=Time.now.year, user=User.current)
@@ -40,25 +40,13 @@ class WorkingHours
       hours = snapshot.target
     end
 
-    # Use holiday gem!!!
-    #holidays = Holiday.where("day >= ? AND day <= ?", start_date, end_date).pluck(:day)
-    holidays = []
-
     t = start_date
     num_days = (end_date - start_date + 1).to_int
     num_days.times do
       if t.wday != 0 and t.wday != 6
         # not a weekend
-        if holidays.include?(t)
-          # holiday on working day
-          holiday = Holiday.find_by_day(t)
-          hours = workday_hours - holiday.hours
-          if hours < 0
-            hours = 0
-          end
-          hours += hours
-        else
-          # working day
+        unless t.holiday?(:de)
+          # not a holiday
           hours += workday_hours
         end
       end
@@ -96,11 +84,13 @@ class WorkingHours
   def self.vacation_days_available(user=User.current)
     user_vacation_days = 0
     custom_field = CustomField.find_by_name('working_hours_vacation_days')
-    unless custom_field.nil?
+    if custom_field.nil?
       cv = CustomValue.where(:custom_field_id => custom_field.id).where(:customized_id => user.id).first
       unless cv.nil?
         user_vacation_days = cv.value.to_i
       end
+    else
+      user_vacation_days = Setting.plugin_redmine_working_hours[:default_vacation_days].to_i
     end
 
     start_date = Date.new(Time.now.year, 1, 1)
@@ -114,13 +104,10 @@ class WorkingHours
     end
 
     unless vacation_issue.nil?
-      #holidays = Holiday.where("day >= ? AND day <= ?", start_date, end_date).pluck(:day)
-      holidays = []
       working_hours = TimeEntry.where(:user_id => user.id, :issue_id => vacation_issue.id, :spent_on => start_date..end_date)
-      #working_hours = WorkingHours.where(:user_id => user.id).where(:issue_id => vacation_issue.id).where("workday >= ? AND workday <= ?", start_date, end_date)
       working_hours.each do |wh|
         if wh.spent_on.wday != 0 and wh.spent_on.wday != 6
-          unless holidays.include?(wh.spent_on)
+          unless wh.spent_on.holiday?(:de)
             #not a weekend and not a holiday
             if wh.hours > workday_hours/2.0
               days_used += 1.0
@@ -150,7 +137,7 @@ class WorkingHours
     custom_field = CustomField.find_by_name('working_hours_pensum')
     unless custom_field.nil?
       cv = CustomValue.where(:custom_field_id => custom_field.id).where(:customized_id => user.id).first
-      unless cv.nil?
+      unless cv.nil? || cv.value.to_f <= 0
         pensum = cv.value.to_f
       end
     end

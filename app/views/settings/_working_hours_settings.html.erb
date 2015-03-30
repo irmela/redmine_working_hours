@@ -8,3 +8,7 @@
   <% issue = Issue.where(:id => settings[:vacation_issue_id]).first %>
   <%= issue.nil? ? "#{l(:label_issue)} #{l('activerecord.errors.messages.invalid')}" : link_to(issue.subject, issue_path(settings[:vacation_issue_id])) %>
 </p>
+<p>
+  <%= label_tag 'settings_default_vacation_days', l('field_default_vacation_days') %>
+  <%= text_field_tag 'settings[default_vacation_days]', settings[:default_vacation_days] %>
+</p>

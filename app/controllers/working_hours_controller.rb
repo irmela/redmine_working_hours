@@ -8,13 +8,13 @@ class WorkingHoursController < ApplicationController
     # filter
     filter_params = params[:filter] || {}
 
-    if params[:format] == 'ics'
-      params[:duration] ||= 365
-      @begindate_filter = filter_params[:begindate] || Date.today - params[:duration].to_s.to_i
-    else
-      @begindate_filter = filter_params[:begindate] || Date.today
-    end
-    @enddate_filter = filter_params[:enddate] || Date.today
+    start_date = Date.new(Time.now.year, 1, 1)
+    end_date = Date.today
+
+    snapshot = WorkingHoursSnapshot.find_current(User.current, start_date, end_date)
+    # set default date filter to params or last snapshot or begin of year
+    @begindate_filter = filter_params[:begindate] || (snapshot.date unless snapshot.blank?) || start_date
+    @enddate_filter = filter_params[:enddate] || end_date
 
     # apply filter
     @working_hours = TimeEntry
@@ -51,12 +51,6 @@ class WorkingHoursController < ApplicationController
         @working_hour_count = @working_hours.count
         @working_hour_pages = Paginator.new(@working_hour_count, per_page_option, params['page'])
         @working_hours = @working_hours.order("#{TimeEntry.table_name}.spent_on DESC").limit(@working_hour_pages.per_page).offset(@working_hour_pages.offset)
-      }
-      format.csv {
-        send_csv
-      }
-      format.ics {
-        send_ics
       }
     end
   end

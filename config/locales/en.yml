@@ -2,9 +2,9 @@ en:
   working_hours: Working hours
 
   label_working_hours: Working hours
-  # label_vacation: Vacation
-  # label_vacation_left: Remaining vacations
-  # label_vacation_new: Add vacation
+  label_vacation: Vacation
+  label_vacation_left: Remaining vacations
+  label_vacation_new: Add vacation
   label_today_capitalized: Today
   label_half_day: Half day
   label_full_day: Full day
@@ -18,6 +18,8 @@ en:
   label_diff: Difference
 
   field_workday: Workday
+  field_starting: Start
+  field_ending: End
 
   field_day: Date
   field_date: Date
@@ -28,3 +30,4 @@ en:
   field_workday_hours: Workday hours
   field_vacation_issue_id: Vacation issue ID
   error_no_vacation_issue: No vacation issue selected
+  field_default_vacation_days: Default vacation days
