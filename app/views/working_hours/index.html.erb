@@ -26,10 +26,7 @@
   </div>
 <% end %>
 
-
-<h3><%= l(:label_overview) %></h3>
-
-<%= l(:label_month) %>:
+<h3><%= l(:label_month) %>:<h3>
 <table class="list">
   <thead>
     <th><%= l(:field_total) %></th>
@@ -47,7 +44,7 @@
   </tr>
 </table>
 
-<p><%= l(:label_vacation_left) %>: <%= WorkingHours.vacation_days_available %> <%= l(:label_day_plural) %></p>
+<h3><%= l(:label_total) %>:</h3>
 
 <table class="list">
   <thead>
@@ -61,3 +58,5 @@
     <td><%= "#{'%.1f' % @diff_hours}h" %></td>
   </tr>
 </table>
+
+ <p><%= l(:label_vacation_left) %>: <%= WorkingHours.vacation_days_available %> <%= l(:label_day_plural) %></p>

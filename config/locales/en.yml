@@ -2,17 +2,9 @@ en:
   working_hours: Working hours
 
   label_working_hours: Working hours
-  label_working_hours_list: View working hours
-  label_working_hours_new: Add working hours
-  label_running: Running
-  label_timestamps: Timestamps
-  label_duration: Duration
-  label_holidays: Holidays
-  label_holidays_new: Add holiday
-  label_holiday_edit: Edit holiday
-  label_vacation: Vacation
-  label_vacation_left: Remaining vacations
-  label_vacation_new: Add vacation
+  # label_vacation: Vacation
+  # label_vacation_left: Remaining vacations
+  # label_vacation_new: Add vacation
   label_today_capitalized: Today
   label_half_day: Half day
   label_full_day: Full day
@@ -24,12 +16,8 @@ en:
   label_diff_until_now: Diff. until today
   label_diff_prev_month: Diff. last month
   label_diff: Difference
-  label_working_hours_statistics: Working hours statistics
 
   field_workday: Workday
-  field_starting: Start
-  field_ending: End
-  field_break: Break
 
   field_day: Date
   field_date: Date
