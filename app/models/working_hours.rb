@@ -19,7 +19,7 @@ class WorkingHours
       hours = snapshot.total
     end
 
-    entries = TimeEntry.where(:user_id => user.id, :spent_on => start_date..end_date) - TimeEntry.where(:issue_id => vacation_issue.id)
+    entries = TimeEntry.where(:user_id => user.id, :spent_on => start_date..end_date)
     working_hours = entries.sum(&:hours)
   end
 

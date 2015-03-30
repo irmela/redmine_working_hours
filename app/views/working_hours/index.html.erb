@@ -38,9 +38,9 @@
       <th><%= l(:label_vacation_left) %></th>
     </thead>
     <tr>
-      <td><%= "#{'%.1f' % @actual_hours}h" %></td>
-      <td><%= "#{'%.1f' % @target_hours}h" %></td>
-      <td><%= "#{'%.1f' % @diff_hours}h" %></td>
+      <td><%= "#{'%.2f' % @actual_hours}h" %></td>
+      <td><%= "#{'%.2f' % @target_hours}h" %></td>
+      <td><%= "#{'%.2f' % @diff_hours}h" %></td>
       <td><%= WorkingHours.vacation_days_available %></td>
     </tr>
   </table>
@@ -57,11 +57,11 @@
       <th><%= l(:label_diff_prev_month) %></th>
     </thead>
     <tr>
-      <td><%= "#{'%.1f' % (WorkingHours.total_hours_month(Time.now.month))}h" %></td>
-      <td><%= "#{'%.1f' % (WorkingHours.target_hours_month(Time.now.month))}h" %></td>
-      <td><%= "#{'%.1f' % (-WorkingHours.diff_hours_until_day(WorkingHours.last_day_of_month(Time.now.month)))}h" %></td>
-      <td><%= "#{'%.1f' % (WorkingHours.diff_hours_until_day(Date.today - 1.day))}h" %></td>
-      <td><%= "#{'%.1f' % (WorkingHours.diff_hours_until_day(Date.new(Time.now.year, Time.now.month, 1) - 1.day))}h" %></td>
+      <td><%= "#{'%.2f' % (WorkingHours.total_hours_month(Time.now.month))}h" %></td>
+      <td><%= "#{'%.2f' % (WorkingHours.target_hours_month(Time.now.month))}h" %></td>
+      <td><%= "#{'%.2f' % (-WorkingHours.diff_hours_until_day(WorkingHours.last_day_of_month(Time.now.month)))}h" %></td>
+      <td><%= "#{'%.2f' % (WorkingHours.diff_hours_until_day(Date.today - 1.day))}h" %></td>
+      <td><%= "#{'%.2f' % (WorkingHours.diff_hours_until_day(Date.new(Time.now.year, Time.now.month, 1) - 1.day))}h" %></td>
     </tr>
   </table>
 </div>
