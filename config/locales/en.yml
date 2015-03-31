@@ -2,6 +2,7 @@ en:
   working_hours: Working hours
 
   label_working_hours: Working hours
+  label_total_hours: Total
   label_vacation: Vacation
   label_vacation_left: Remaining vacations
   label_vacation_new: Add vacation
@@ -31,3 +32,5 @@ en:
   field_vacation_issue_id: Vacation issue ID
   error_no_vacation_issue: No vacation issue selected
   field_default_vacation_days: Default vacation days
+  button_log_vacation: Log vacation
+  button_log_status_meeting: Log status meeting

@@ -2,9 +2,10 @@ de:
   working_hours: Arbeitszeit
 
   label_working_hours: Arbeitszeit
+  label_total_hours: Gesamt
   label_vacation: Ferien
-  label_vacation_left: Ferienguthaben
-  label_vacation_new: Ferien hinzufügen
+  label_vacation_left: Verfügbare Urlaubstage
+  label_vacation_new: Urlaub hinzufügen
   label_today_capitalized: Heute
   label_half_day: Halber Tag
   label_full_day: Ganzer Tag
@@ -25,9 +26,11 @@ de:
   field_date: Datum
   field_total: Ist
   field_target: Soll
-  field_vacation_days: Benutzte Ferientage
+  field_vacation_days: Gebuchte Urlaubstage
 
   field_workday_hours: Stunden pro Arbeitstag
   field_vacation_issue_id: Ferienticket ID
   error_no_vacation_issue: Kein Ferienticket ausgewählt
   field_default_vacation_days: Standard Urlaubstage
+  button_log_vacation: Urlaub buchen
+  button_log_status_meeting: Status buchen

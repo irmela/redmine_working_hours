@@ -81,6 +81,32 @@ class WorkingHours
     Issue.find_by_id(Setting.plugin_redmine_working_hours[:vacation_issue_id])
   end
 
+  def self.vacation_days_used(start_date, end_date, user=User.current)
+    days_used = 0
+
+    snapshot = WorkingHoursSnapshot.find_current(user, start_date, end_date)
+    unless snapshot.nil?
+      start_date = snapshot.date
+    end
+
+    unless vacation_issue.nil?
+      working_hours = TimeEntry.where(:user_id => user.id, :issue_id => vacation_issue.id, :spent_on => start_date..end_date)
+      working_hours.each do |wh|
+        if wh.spent_on.wday != 0 and wh.spent_on.wday != 6
+          unless wh.spent_on.holiday?(:de)
+            #not a weekend and not a holiday
+            if wh.hours > workday_hours/2.0
+              days_used += 1.0
+            else
+              days_used += 0.5
+            end
+          end
+        end
+      end
+    end
+    days_used
+  end
+
   def self.vacation_days_available(user=User.current)
     user_vacation_days = 0
     custom_field = CustomField.find_by_name('working_hours_vacation_days')
