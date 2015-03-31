@@ -10,8 +10,8 @@ entries_by_day = entries.group_by(&:spent_on)
 <% if User.current.allowed_to?(:log_time, nil, :global => true) %>
 <div class="contextual">
   <%= link_to l(:button_log_time), new_time_entry_path, :class => "icon icon-add" %>
-  <%= link_to l(:button_log_vacation), new_time_entry_path, :class => "icon icon-add" %>
-  <%= link_to l(:button_log_status_meeting), new_time_entry_path, :class => "icon icon-add" %>
+  <%= link_to l(:button_log_vacation), new_time_entry_path + '?issue_id=' + WorkingHours.vacation_issue.id.to_s, :class => "icon icon-add" %>
+  <%= link_to l(:button_log_status_meeting), new_time_entry_path + '?issue_id=6264', :class => "icon icon-add" %>
 </div>
 <% end %>
 
