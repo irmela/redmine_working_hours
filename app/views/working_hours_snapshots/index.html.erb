@@ -25,8 +25,8 @@
       <tr>
         <td><%= User.find(entry.user_id).name %></td>
         <td><%= entry.date %></td>
-        <td><%= entry.total %>' (<%= "#{'%.1f' % (entry.total/60.0)}h" %>)</td>
-        <td><%= entry.target %>' (<%= "#{'%.1f' % (entry.target/60.0)}h" %>)</td>
+        <td><%= entry.total %> h </td>
+        <td><%= entry.target %> h</td>
         <td><%= entry.vacation_days %> d</td>
         <td><%= link_to l(:button_edit), edit_working_hours_snapshot_path(entry), :class => 'icon icon-edit' %></td>
         <td><%= link_to l(:button_delete), working_hours_snapshot_path(entry), :method => :delete, :confirm => l(:text_are_you_sure), :class => 'icon icon-del' %></td>
