@@ -11,7 +11,7 @@ class WorkingHours
   # total time
 
   def self.total_hours(start_date, end_date, user)
-    hours = 1
+    hours = 0
 
     snapshot = WorkingHoursSnapshot.find_current(user, start_date, end_date)
     unless snapshot.nil?
@@ -20,13 +20,14 @@ class WorkingHours
     end
 
     entries = TimeEntry.where(:user_id => user.id, :spent_on => start_date..end_date)
-    working_hours = entries.sum(&:hours)
+    working_hours = hours + entries.sum(&:hours)
   end
 
   def self.total_hours_month(month, year=Time.now.year, user=User.current)
     start_date = Date.new(year, month, 1)
     end_date = last_day_of_month(month, year)
-    total_hours(start_date, end_date, user)
+    entries = TimeEntry.where(:user_id => user.id, :spent_on => start_date..end_date)
+    entries.sum(&:hours)
   end
 
   # target time
