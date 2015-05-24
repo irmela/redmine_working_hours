@@ -6,7 +6,7 @@
     <%= f.collection_select :user_id, @users, :id, :name, {:include_blank => false} %>
   </p>
   <p><%= f.text_field :date, :size => 10, :value => (@snapshot.date.to_date.strftime("%Y-%m-%d") rescue nil) %><%= calendar_for('working_hours_snapshot_date') %></p>
-  <p><%= f.text_field :total, :size => 5 %> min</p>
-  <p><%= f.text_field :target, :size => 5 %> min</p>
+  <p><%= f.text_field :total, :size => 5 %> h</p>
+  <p><%= f.text_field :target, :size => 5 %> h</p>
   <p><%= f.text_field :vacation_days, :size => 5 %> d</p>
 </div>

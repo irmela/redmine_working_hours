@@ -1,10 +1,9 @@
 Redmine::Plugin.register :redmine_working_hours do
   name 'Redmine Working Hours plugin'
-  author 'Pirmin Kalberer, Mathias Walker'
+  author 'Pirmin Kalberer, Mathias Walker, Irmela Göhl'
   description 'A plugin for integration of working time in Redmine'
   version '1.0'
-  url 'https://github.com/sourcepole/redmine_working_hours'
-  author_url 'http://sourcepole.ch'
+  url 'https://github.com/irmela/redmine_working_hours'
 
   menu :account_menu, :working_hours,
     {:controller => 'working_hours', :action => 'index'},

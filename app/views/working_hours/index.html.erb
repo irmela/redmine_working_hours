@@ -1,95 +1,74 @@
 <% content_for :header_tags do %>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $('input#filter_begindate, input#filter_enddate').keyup(function(e) {
-        if (e.keyCode == 13) {
-          $("#query_form").submit();
-        }
-      });
-
-      $('select#filter_project_id').change(function() {
-        $.ajax({
-          url: "<%= project_issues_working_hours_path(:filter => 1) %>",
-          data: {
-            project_id: $(this).val()
-          },
-          dataType: "script"
-        });
-      });
-
-    });
-  </script>
-
   <%= stylesheet_link_tag '/plugin_assets/redmine_working_hours/stylesheets/working_hours' %>
 <% end %>
 
+<h1><%= l(:label_working_hours) %></h1>
+
 <div class="contextual">
-  <%= link_to l(:button_add), new_working_hour_path(:filter => params[:filter]), :class => 'icon icon-add' %>
-  <%= link_to l(:label_holidays), holidays_path, :class => 'icon icon-ics' %>
   <% if User.current.admin? %>
     <%= link_to l(:label_working_hours_snapshots), working_hours_snapshots_path, :class => 'icon icon-time' %>
   <% end %>
 </div>
 
-<h2><%=l(:label_working_hours)%></h2>
+<div class="working-hours-total">
+  <h3><%= l(:label_total_hours) %>:</h3>
 
-<%= form_tag({ :action => 'index'},:method => :get, :id => 'query_form') do %>
-  <div id="query_form_with_buttons" class="hide-when-print">
-    <div id="query_form_content">
-      <fieldset id="filters" class="collapsible">
-        <legend onclick="toggleFieldset(this);"><%= l(:label_filter_plural) %></legend>
-        <div>
-          <%= l(:field_starting) %>: <%= text_field_tag 'filter[begindate]', @begindate_filter, :size => 10 %><%= calendar_for('filter_begindate') %>
-          <%= l(:field_ending) %>: <%= text_field_tag 'filter[enddate]', @enddate_filter, :size => 10 %><%= calendar_for('filter_enddate') %>
-          <%= l(:field_project) %>: <%= collection_select :filter, :project_id, @project_filter_collection, :id, :name, :prompt => l(:label_all), :selected => @project_filter %>
-          <%= l(:field_issue) %>: <%= collection_select :filter, :issue_id, @issue_filter_collection, :id, :subject, :prompt => l(:label_all), :selected => @issue_filter %>
-        </div>
-      </fieldset>
+  <%= form_tag({ :action => 'index'},:method => :get, :id => 'query_form') do %>
+    <div id="query_form_with_buttons" class="hide-when-print">
+      <div id="query_form_content">
+        <fieldset id="filters" class="collapsible collapsed">
+          <legend onclick="toggleFieldset(this);"><%= l(:label_filter_plural) %></legend>
+          <div style="display: none">
+            <%= l(:field_starting) %>: <%= text_field_tag 'filter[begindate]', @begindate_filter, :size => 10 %><%= calendar_for('filter_begindate') %>
+            <%= l(:field_ending) %>: <%= text_field_tag 'filter[enddate]', @enddate_filter, :size => 10 %><%= calendar_for('filter_enddate') %>
+            <p class="buttons">
+              <%= link_to_function l(:button_apply), '$("#query_form").submit()', :class => 'icon icon-checked' %>
+              <%= link_to l(:button_clear), {}, :class => 'icon icon-reload'  %>
+            </p>
+          </div>
+        </fieldset>
+      </div>
     </div>
-    <p class="buttons">
-      <%= link_to_function l(:button_apply), '$("#query_form").submit()', :class => 'icon icon-checked' %>
-      <%= link_to l(:button_clear), {}, :class => 'icon icon-reload'  %>
-    </p>
-  </div>
-<% end %>
+  <% end %>
 
-<% if @working_hours.empty? %>
-  <p class="nodata"><%= l(:label_no_data) %></p>
-<% else %>
-  <%= render :partial => 'working_hours/list', :locals => {:working_hours => @working_hours} %>
+  <table class="list">
+    <thead>
+      <th><%= l(:field_total) %></th>
+      <th><%= l(:field_target) %></th>
+      <th><%= l(:label_diff) %></th>
+<!--       <th><%# l(:field_vacation_days) %></th>
+ -->      <th><%= l(:label_vacation_left) %></th>
+    </thead>
+    <tr>
+      <td><%= "#{'%.2f' % @actual_hours}h" %></td>
+      <td><%= "#{'%.2f' % @target_hours}h" %></td>
+      <td><%= "#{'%.2f' % @diff_hours}h" %></td>
+<!--       <td><%# @vacation_days_used %></td>
+ -->      <td><%= WorkingHours.vacation_days_available %></td>
+    </tr>
+  </table>
+</div>
 
-  <p class="other-formats">
-    <%= l(:label_export_to) %>
-    <span><%= link_to 'CSV', params.merge({:format => 'csv'}), :class => 'icon icon-csv' %></span>
-    <% if User.current.admin? %>
-      <span><%= link_to "CSV (#{l(:field_admin)})", params.merge({:format => 'csv', :users => 'all'}), :class => 'icon icon-csv' %></span>
-    <% end %>
-    <span><%= link_to 'iCalendar', params.merge({:format => 'ics', :key => User.current.api_key}), :class => 'icon icon-ics' %></span>
-  </p>
-<% end %>
+<div class="working-hours-current-month">
+  <h3><%= DateTime.now.strftime("%B %Y") %>:</h3>
+  <table class="list">
+    <thead>
+      <th><%= l(:field_total) %></th>
+      <th><%= l(:field_target) %></th>
+      <th><%= l(:label_target_remaining) %></th>
+<!--       <th><%# l(:label_diff_until_now) %></th>
+      <th><%# l(:label_diff_prev_month) %></th> -->
+    </thead>
+    <tr>
+      <td><%= "#{'%.2f' % (WorkingHours.total_hours_month(Time.now.month))}h" %></td>
+      <td><%= "#{'%.2f' % (WorkingHours.target_hours_month(Time.now.month))}h" %></td>
+      <td><%= "#{'%.2f' % (-WorkingHours.diff_hours_until_day(WorkingHours.last_day_of_month(Time.now.month)))}h" %></td>
+<!--       <td><%# "#{'%.2f' % (WorkingHours.diff_hours_until_day(Date.today - 1.day))}h" %></td>
+        <td><%# "#{'%.2f' % (WorkingHours.diff_hours_until_day(Date.new(Time.now.year, Time.now.month, 1) - 1.day))}h" %></td> -->
+    </tr>
+  </table>
+</div>
 
-<h3><%= l(:label_overview) %></h3>
-
-<p><%= l(:label_today_capitalized) %>: <%= duration(WorkingHours.total_minutes_day(Date.today)) %></p>
-
-<%= l(:label_month) %>:
-<table class="list">
-  <thead>
-    <th><%= l(:field_total) %></th>
-    <th><%= l(:field_target) %></th>
-    <th><%= l(:label_target_remaining) %></th>
-    <th><%= l(:label_diff_until_now) %></th>
-    <th><%= l(:label_diff_prev_month) %></th>
-  </thead>
-  <tr>
-    <td><%= "#{'%.1f' % (WorkingHours.total_minutes_month(Time.now.month)/60.0)}h" %></td>
-    <td><%= "#{'%.1f' % (WorkingHours.target_minutes_month(Time.now.month)/60.0)}h" %></td>
-    <td><%= "#{'%.1f' % (-WorkingHours.diff_minutes_until_day(WorkingHours.last_day_of_month(Time.now.month))/60.0)}h" %></td>
-    <td><%= "#{'%.1f' % (WorkingHours.diff_minutes_until_day(Date.today - 1.day)/60.0)}h" %></td>
-    <td><%= "#{'%.1f' % (WorkingHours.diff_minutes_until_day(Date.new(Time.now.year, Time.now.month, 1) - 1.day)/60.0)}h" %></td>
-  </tr>
-</table>
-
-<p><%= l(:label_vacation_left) %>: <%= WorkingHours.vacation_days_available %> <%= l(:label_day_plural) %></p>
-
-<p><%= link_to l(:label_working_hours_statistics), statistics_working_hours_path %><p>
+<div class="mypage-box">
+  <%= render :partial => "timelog_week", :locals => { :user => @user, :timelog_items => TimeEntry.where(:user_id => @user.id, :spent_on => (Date.today.beginning_of_week)..Date.today) } %>
+</div>

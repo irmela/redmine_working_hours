@@ -2,17 +2,10 @@ de:
   working_hours: Arbeitszeit
 
   label_working_hours: Arbeitszeit
-  label_working_hours_list: Arbeitszeit ansehen
-  label_working_hours_new: Arbeitszeit hinzufügen
-  label_running: Aktiv
-  label_timestamps: Zeitstempel
-  label_duration: Zeitdauer
-  label_holidays: Feiertage
-  label_holidays_new: Feiertag hinzufügen
-  label_holiday_edit: Feiertag bearbeiten
+  label_total_hours: Gesamt
   label_vacation: Ferien
-  label_vacation_left: Ferienguthaben
-  label_vacation_new: Ferien hinzufügen
+  label_vacation_left: Verfügbare Urlaubstage
+  label_vacation_new: Urlaub hinzufügen
   label_today_capitalized: Heute
   label_half_day: Halber Tag
   label_full_day: Ganzer Tag
@@ -24,19 +17,20 @@ de:
   label_diff_until_now: Diff. bis heute
   label_diff_prev_month: Diff. im Vormonat
   label_diff: Differenz
-  label_working_hours_statistics: Arbeitszeit Statistik
 
   field_workday: Arbeitstag
   field_starting: Start
   field_ending: Ende
-  field_break: Pause
 
   field_day: Datum
   field_date: Datum
   field_total: Ist
   field_target: Soll
-  field_vacation_days: Benutzte Ferientage
+  field_vacation_days: Gebuchte Urlaubstage
 
   field_workday_hours: Stunden pro Arbeitstag
   field_vacation_issue_id: Ferienticket ID
   error_no_vacation_issue: Kein Ferienticket ausgewählt
+  field_default_vacation_days: Standard Urlaubstage
+  button_log_vacation: Urlaub buchen
+  button_log_status_meeting: Status buchen

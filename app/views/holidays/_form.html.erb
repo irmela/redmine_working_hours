@@ -1,6 +1,0 @@
-<%= error_messages_for 'holiday' %>
-
-<div class="box tabular">
-  <p><%= f.text_field :day, :size => 10, :value => (@holiday.day.to_date.strftime("%Y-%m-%d") rescue nil) %><%= calendar_for('holiday_day') %></p>
-  <p><%= f.text_field :hours, :size => 5 %></p>
-</div>
